@@ -1,0 +1,11 @@
+<Solution>
+    <Folder Name="/Solution Items/">
+        <File Path="compose.yaml"/>
+    </Folder>
+    <Folder Name="/src/">
+        <Project Path="src/Auth.Api/Auth.Api.csproj"/>
+        <Project Path="src/Auth.Application/Auth.Application.csproj"/>
+        <Project Path="src/Auth.Domain/Auth.Domain.csproj"/>
+        <Project Path="src/Auth.Infrastructure/Auth.Infrastructure.csproj"/>
+    </Folder>
+</Solution>

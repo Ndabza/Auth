@@ -1,0 +1,52 @@
+﻿version: '3.8'
+
+services:
+  # 1. Asp.Net Core Web API  
+  auth.api:
+    image: auth.api
+    container_name: auth.api
+    ports:
+      - "5000:5000"
+    build:
+      context: .
+      dockerfile: src/Auth.Api/Dockerfile
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Configures connection strings utilizing container names as the host network addresses
+      - ConnectionStrings__DefaultConnection=Host=auth.database;Database=authdb;Username=postgres;Password=mysecretpassword
+      - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM15SGvdC3mRLUQD1m71imC6X7n60cH186yihWWDQXGnM3UpG8k4G9T74dg==;BlobEndpoint=http://auth.blob_storage;
+    depends_on:
+      - auth.database
+      - auth.blob_storage
+
+  # 2. PostgreSql Database
+  auth.database:
+    image: postgres:18-alpine # Recommended over 'latest' to lock in version consistency
+    container_name: auth.database
+    environment:
+      - POSTGRES_DB=authdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  # 3. Azurite Storage Emulator
+  auth.blob_storage:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: auth.blob_storage
+    hostname: auth.blob_storage
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - azurite_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  azurite_data:
