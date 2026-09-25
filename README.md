@@ -20,8 +20,8 @@ Make sure you have [Docker Desktop](https://docker.com) installed on your machin
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com
-cd YOUR_REPO_NAME
+git clone https://github.com/Ndabza/Auth
+cd Auth
 ```
 
 ### Step 2: Spin Up the Stack
