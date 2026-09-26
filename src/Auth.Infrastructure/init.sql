@@ -26,7 +26,7 @@ create table refresh_token
     user_id       uuid         not null references auth_user (id) on delete cascade,
     token         varchar(100) not null,
     token_expires date         not null,
-    revoked       date         not null,
+    revoked       date,
     replaced_by   varchar(100),
     is_expired    boolean      not null             default false,
     is_revoked    boolean      not null             default false,
