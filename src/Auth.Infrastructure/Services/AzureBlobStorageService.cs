@@ -4,19 +4,20 @@ public class AzureBlobStorageService : IStorageService
 {
     private readonly BlobServiceClient _blobServiceClient;
 
-    public AzureBlobStorageService()
+    public AzureBlobStorageService(IConfiguration configuration)
     {
+        var connectionString = configuration.GetConnectionString("AzureStorage") ?? "UseDevelopmentStorage=true";
         var options = new BlobClientOptions(BlobClientOptions.ServiceVersion.V2024_11_04);
-        _blobServiceClient = new BlobServiceClient("UseDevelopmentStorage=true", options);
+        _blobServiceClient = new BlobServiceClient(connectionString, options);
     }
 
     public async Task<string> UpLoadFileAsync(string containerName, Stream stream, string contentType, string extension)
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
 
-        await containerClient.CreateIfNotExistsAsync();
-
-        var fileName = $"{Guid.NewGuid().ToString()} {extension}";
+        await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+        
+        var fileName = $"{Guid.NewGuid()}{extension}";
         var blobClient = containerClient.GetBlobClient(fileName);
         var uploadOptions = new BlobUploadOptions
         {
@@ -28,7 +29,7 @@ public class AzureBlobStorageService : IStorageService
 
         await blobClient.UploadAsync(stream, uploadOptions);
 
-        return blobClient.Uri.AbsoluteUri;
+        return $"{blobClient.BlobContainerName}/{blobClient.Name}";
     }
 
     public async Task DeleteAsync(string containerName, string fileName)

@@ -12,10 +12,10 @@
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=auth.database;Database=authdb;Username=postgres;Password=mysecretpassword
-      - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM15SGvdC3mRLUQD1m71imC6X7n60cH186yihWWDQXGnM3UpG8k4G9T74dg==;BlobEndpoint=http://auth.blob_storage;
+      - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
     depends_on:
       - auth.database
-      - auth.blob_storage
+      - azurite
 
   # 2. PostgreSql Database
   auth.database:
@@ -38,10 +38,11 @@
       retries: 5
 
   # 3. Azurite Storage Emulator
-  auth.blob_storage:
+  azurite:
     image: mcr.microsoft.com/azure-storage/azurite:latest
-    container_name: auth.blob_storage
-    hostname: auth.blob_storage
+    container_name: azurite
+    hostname: azurite
+    command: azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --location /data
     ports:
       - "10000:10000"
       - "10001:10001"

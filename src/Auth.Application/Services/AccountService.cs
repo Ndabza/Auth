@@ -28,7 +28,7 @@ public sealed class AccountService(
 
         try
         {
-            avatarUrl = await storageService.UpLoadFileAsync("auth-container", signUpDto.AvatarStream,
+            avatarUrl = await storageService.UpLoadFileAsync("authcontainer", signUpDto.AvatarStream,
                 signUpDto.ContentType, signUpDto.Extension);
 
             await signUpDto.AvatarStream.DisposeAsync();
@@ -46,7 +46,8 @@ public sealed class AccountService(
 
             await dataAccess.RollbackAsync();
             await signUpDto.AvatarStream.DisposeAsync();
-            await storageService.DeleteAsync("auth-container", avatarUrl);
+            if(avatarUrl is not null && !string.IsNullOrWhiteSpace(avatarUrl))
+                await storageService.DeleteAsync("authcontainer", avatarUrl);
 
             throw;
         }
