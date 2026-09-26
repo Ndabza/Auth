@@ -1,6 +1,4 @@
-﻿version: '3.8'
-
-services:
+﻿services:
   # 1. Asp.Net Core Web API  
   auth.api:
     image: auth.api
@@ -13,7 +11,6 @@ services:
     restart: unless-stopped
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      # Configures connection strings utilizing container names as the host network addresses
       - ConnectionStrings__DefaultConnection=Host=auth.database;Database=authdb;Username=postgres;Password=mysecretpassword
       - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM15SGvdC3mRLUQD1m71imC6X7n60cH186yihWWDQXGnM3UpG8k4G9T74dg==;BlobEndpoint=http://auth.blob_storage;
     depends_on:
@@ -22,17 +19,23 @@ services:
 
   # 2. PostgreSql Database
   auth.database:
-    image: postgres:18-alpine # Recommended over 'latest' to lock in version consistency
+    image: postgres:latest
     container_name: auth.database
     environment:
       - POSTGRES_DB=authdb
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=mysecretpassword
+      - PGDATA=/var/lib/postgresql/data/data
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d authdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # 3. Azurite Storage Emulator
   auth.blob_storage:
