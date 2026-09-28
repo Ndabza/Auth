@@ -1,29 +1,50 @@
+using Auth.Application.Features.Auth.SignUp;
+using MediatR;
+
 namespace Auth.Api.Endpoints.Auth;
 
 public static class SignUpEndpoint
 {
+    private const string BlobStorageContainerName = "auth-container";
+
     public static void MapSignUpEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapPost("/auth/signup", async ([FromForm] SignUpRequest signUpRequest, IAccountService accountService) =>
-        {
-            if (signUpRequest.Avatar.Length == 0)
-                return Results.BadRequest("Avatar is required");
+        app.MapPost("/auth/signup",
+            async ([FromForm] SignUpRequest signUpRequest, IStorageService storageService, ISender mediator) =>
+            {
+                var avatarUrl = string.Empty;
 
-            var stream = signUpRequest.Avatar.OpenReadStream();
-            var dto = new SignUpDto(
-                signUpRequest.Email,
-                signUpRequest.FirstName,
-                signUpRequest.LastName,
-                signUpRequest.Bio,
-                stream,
-                signUpRequest.Avatar.ContentType,
-                Path.GetExtension(signUpRequest.Avatar.FileName),
-                signUpRequest.Password);
+                if (signUpRequest.Avatar.Length > 0)
+                {
+                    await using var stream = signUpRequest.Avatar.OpenReadStream();
+                    avatarUrl = await storageService.UpLoadFileAsync(
+                        BlobStorageContainerName,
+                        stream,
+                        signUpRequest.Avatar.ContentType,
+                        Path.GetExtension(signUpRequest.Avatar.FileName));
+                }
 
-            await accountService.SignUpAsync(dto);
+                try
+                {
+                    var dto = new SignUpDto(
+                        signUpRequest.Email,
+                        signUpRequest.FirstName,
+                        signUpRequest.LastName,
+                        signUpRequest.Bio,
+                        avatarUrl,
+                        signUpRequest.Password);
 
-            return Results.Created("/auth/signup", "User created successfully");
-        }).DisableAntiforgery();
+                    await mediator.Send(new SignUpCommand(dto));
+
+                    return Results.Created("/auth/signup", "User created successfully");
+                }
+                catch (Exception)
+                {
+                    if (!string.IsNullOrEmpty(avatarUrl))
+                        await storageService.DeleteAsync(BlobStorageContainerName, avatarUrl);
+                    throw;
+                }
+            }).DisableAntiforgery();
     }
 }
 

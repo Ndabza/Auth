@@ -1,6 +1,5 @@
+using MediatR;
+
 namespace Auth.Application.Features.Auth.SignIn;
 
-public interface SignInCommand
-{
-    
-}
+public sealed record SignInCommand(SignInRequest SignInRequest): IRequest<TokenResponse>;

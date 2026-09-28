@@ -2,6 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddInfrastructureService(builder.Configuration);
 builder.Services.AddApplicationServices();
 

@@ -1,3 +1,5 @@
+using MediatR;
+
 namespace Auth.Application.Features.Auth.Refresh;
 
-public record RefreshCommand();
+public sealed record RefreshCommand(string RefreshToken):IRequest<TokenResponse>;

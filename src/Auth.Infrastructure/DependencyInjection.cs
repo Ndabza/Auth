@@ -8,6 +8,7 @@ public static class DependencyInjection
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         services.AddScoped<IDataAccess, DataAccess>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IDbInitializer, DbInitializer>();
 
         services.AddScoped<ITokenService, TokenService>();

@@ -22,15 +22,12 @@ create table user_profile
 
 create table refresh_token
 (
-    id            uuid         not null primary key default gen_random_uuid(),
-    user_id       uuid         not null references auth_user (id) on delete cascade,
-    token         varchar(100) not null,
-    token_expires date         not null,
-    revoked       date,
-    replaced_by   varchar(100),
-    is_expired    boolean      not null             default false,
-    is_revoked    boolean      not null             default false,
-    is_active     boolean      not null             default true
+    id                uuid         not null primary key default gen_random_uuid(),
+    user_id           uuid         not null references auth_user (id) on delete cascade,
+    token             varchar(100) not null,
+    token_expires     date         not null,
+    revoked_at        date,
+    replaced_by_token varchar(100)
 );
 
 create or replace function update_updated_at_column()

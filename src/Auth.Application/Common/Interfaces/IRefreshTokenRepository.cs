@@ -2,10 +2,8 @@ namespace Auth.Application.Common.Interfaces;
 
 public interface IRefreshTokenRepository
 {
-    Task InsertIntoRefreshTokenAsync(Guid userId, string refreshToken, DateTime expires,
-        IDbTransaction? transaction = null);
-
-    Task<RefreshToken?> GetByRefreshTokenAsync(string refreshToken, IDbTransaction? transaction = null);
-    Task RevokeAllActiveTokensAsync(Guid userId, IDbTransaction? transaction = null);
-    Task UpdateRefreshTokenAsync(RefreshToken refreshToken, IDbTransaction? transaction = null);
+    Task InsertIntoRefreshTokenAsync(RefreshToken refreshToken, CancellationToken cancellationToken);
+    Task<RefreshToken?> GetByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken);
+    Task RevokeAllActiveTokensAsync(Guid userId, CancellationToken cancellationToken);
+    Task UpdateRefreshTokenAsync(RefreshToken refreshToken, CancellationToken cancellationToken);
 }

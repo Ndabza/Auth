@@ -5,7 +5,5 @@ public sealed record SignUpDto(
     string FirstName,
     string LastName,
     string Bio,
-    Stream AvatarStream,
-    string ContentType,
-    string Extension,
+    string AvatarUrl,
     string Password);

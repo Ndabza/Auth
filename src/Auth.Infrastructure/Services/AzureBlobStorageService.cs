@@ -1,6 +1,6 @@
 namespace Auth.Infrastructure.Services;
 
-public class AzureBlobStorageService : IStorageService
+public sealed class AzureBlobStorageService : IStorageService
 {
     private readonly BlobServiceClient _blobServiceClient;
 
