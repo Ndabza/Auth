@@ -1,3 +1,5 @@
+using Auth.Infrastructure.BackgroundServices;
+
 namespace Auth.Infrastructure;
 
 public static class DependencyInjection
@@ -6,6 +8,8 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
+
+        services.AddScoped<IDbConnection>(sp => new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<IDataAccess, DataAccess>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -21,6 +25,8 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JwtOptionsKey));
+
+        services.AddHostedService<TokenCleanupService>();
 
         return services;
     }

@@ -39,6 +39,17 @@ begin
 end;
 $$ language plpgsql;
 
+-- 1. Creating the cleanup function
+/*create or replace function purge_expired_tokens()
+returns trigger as
+$$
+begin
+    -- Deletes any token where the expiration time has passed
+    delete from refresh_token where token_expires < now();
+    return new;
+end;
+$$ language plpgsql;*/
+
 create trigger auth_user_timestamp_update
     before update
     on auth_user
@@ -50,5 +61,11 @@ create trigger user_profile_timestamp_update
     on user_profile
     for each row
 execute function update_updated_at_column();
+
+-- 2. Binding the trigger to the table
+/*create trigger trigger_purge_tokens
+    after insert on refresh_token
+    for each statement
+execute function purge_expired_tokens();*/
 
 commit;

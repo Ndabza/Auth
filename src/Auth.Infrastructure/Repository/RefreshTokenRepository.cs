@@ -53,17 +53,24 @@ public sealed class RefreshTokenRepository(IDataAccess dataAccess) : IRefreshTok
         const string sql = """
                            update refresh_token set revoked_at = @revoked_at, 
                                                     replaced_by_token = @replaced_by_token 
-                           where user_id = @user_id;
+                           where user_id = @user_id and token = @token and revoked_at is null;
                            """;
 
         var parameter = new
         {
             user_id = refreshToken.UserId,
+            token = refreshToken.Token,
             revoked_at = refreshToken.RevokedAt,
             replaced_by_token = refreshToken.ReplacedByToken
         };
 
         await dataAccess.Connection.ExecuteAsync(new CommandDefinition(sql, parameter,
             transaction: dataAccess.Transaction, cancellationToken: cancellationToken));
+    }
+
+    public async Task<int> DeleteExpiredTokens(CancellationToken cancellationToken)
+    {
+        const string sql = "delete from refresh_token where token_expires < now();";
+        return await dataAccess.Connection.ExecuteAsync(new CommandDefinition(sql, cancellationToken: cancellationToken));
     }
 }

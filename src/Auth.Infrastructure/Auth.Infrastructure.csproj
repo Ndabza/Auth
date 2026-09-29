@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <ProjectReference Include="..\Auth.Domain\Auth.Domain.csproj"/>
-        <ProjectReference Include="..\Auth.Application\Auth.Application.csproj"/>
+        <ProjectReference Include="..\Auth.Domain\Auth.Domain.csproj" />
+        <ProjectReference Include="..\Auth.Application\Auth.Application.csproj" />
     </ItemGroup>
 
     <PropertyGroup>
@@ -13,15 +13,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.29.2"/>
-        <PackageReference Include="BCrypt.Net-Next" Version="4.2.0"/>
-        <PackageReference Include="Dapper" Version="2.1.86"/>
-        <PackageReference Include="Npgsql" Version="10.0.3"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.22.0"/>
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.29.2" />
+        <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
+        <PackageReference Include="Dapper" Version="2.1.86" />
+        <PackageReference Include="Npgsql" Version="10.0.3" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.22.0" />
     </ItemGroup>
 
     <ItemGroup>
