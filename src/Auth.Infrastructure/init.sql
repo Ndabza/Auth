@@ -25,8 +25,8 @@ create table refresh_token
     id                uuid         not null primary key default gen_random_uuid(),
     user_id           uuid         not null references auth_user (id) on delete cascade,
     token             varchar(100) not null,
-    token_expires     date         not null,
-    revoked_at        date,
+    token_expires     timestamptz         not null,
+    revoked_at        timestamptz,
     replaced_by_token varchar(100)
 );
 
