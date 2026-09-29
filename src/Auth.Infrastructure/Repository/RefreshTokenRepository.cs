@@ -71,6 +71,7 @@ public sealed class RefreshTokenRepository(IDataAccess dataAccess) : IRefreshTok
     public async Task<int> DeleteExpiredTokens(CancellationToken cancellationToken)
     {
         const string sql = "delete from refresh_token where token_expires < now();";
-        return await dataAccess.Connection.ExecuteAsync(new CommandDefinition(sql, cancellationToken: cancellationToken));
+        return await dataAccess.Connection.ExecuteAsync(new CommandDefinition(sql,
+            transaction: dataAccess.Transaction, cancellationToken: cancellationToken));
     }
 }
